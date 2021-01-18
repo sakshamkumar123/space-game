@@ -2,7 +2,7 @@ var backGroundImg
 var player,playerImg,alien,alienImg,asteroid,asteroidImg,rocket,rocketImg,ufo,ufoImg,bullet
 var gameState = 0 
 var rand
-var mkc
+var obstacles
 
 function preload(){
   backGroundImg = loadImage("background.png")
@@ -21,7 +21,7 @@ function setup() {
   player.addImage(rocketImg)
   player.scale = 0.3
   
-  mkc = createGroup()
+  obstacles = createGroup()
   
 
   
@@ -58,10 +58,12 @@ rand = round(random(1,4))
   if(rand === 1){
     asteroid = createSprite(random(200,500),player.y-900)
     asteroid.addImage(asteroidImg)
-    asteroid.scale = 0.8
+    asteroid.scale = 0.7
+    asteroid.setCollider("rectangle",50,0,230,350)
+    //asteroid.debug = true
    asteroid.velocityX = random(-6,6)
    asteroid.velocityY = random(1,6)
-   mkc.add(asteroid)
+   obstacles.add(asteroid)
   
   }
   if ( rand  === 2){
@@ -69,6 +71,8 @@ rand = round(random(1,4))
     alien.addImage(alienImg)
     alien.velocityY = 6
     alien.scale = 0.6
+    alien.setCollider("rectangle",0,0,300,300)
+    //alien.debug = true
     if (player.x<233){
     alien.velocityX = -6
     }
@@ -78,17 +82,20 @@ rand = round(random(1,4))
     if (player.x>466){
         alien.velocityX = 6
       }
-      mkc.add(alien)
+      obstacles.add(alien)
   }
 
   if (rand ===3){
     ufo = createSprite(random(200,500),player.y-900)
     ufo.addImage(ufoImg)
     ufo.scale = 0.1
+    
+    ufo.setCollider("rectangle",0,0,ufo.width/2,ufo.height/2)
+    //ufo.debug = true
     var speed = map(player.x,0,700,-6,6)
     ufo.velocityX = speed
     ufo.velocityY = 5
-    mkc.add(ufo)
+    obstacles.add(ufo)
   }
   
    console.log(rand)
@@ -112,7 +119,7 @@ rand = round(random(1,4))
   if (keyDown("space")){
     console.log(player.y)
   }
-  if(player.isTouching(mkc) ){
+  if(player.isTouching(obstacles) ){
     gameState=3
   }
   drawSprites()
@@ -127,6 +134,13 @@ rand = round(random(1,4))
     text("YOU LOST!!",width/2-width/4,340)
     text("press r to restart",width/2-width/4,440)
 
+    if (keyDown("r")){
+      gameState = 1
+      camera.position.y = 150
+      player.y = height/2
+      player.x = width/2
+      
+    }
   }
 
   if (player.y<-3600){
